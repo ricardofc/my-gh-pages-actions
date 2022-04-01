@@ -11,7 +11,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Use SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          sudo chmod 600 ~/.ssh/id_rsa
+      - name: Git config
+        run: |
+          git config --global user.email "ricardofc.sistemas@gmail.com"
+          git config --global user.name "ricardofc"
       - name: Install
         run: npm ci
       - name: Deploy
-        run: npm run deploy
+        run: npm run deploy -- -r https://github.com/ricardofc/my-gh-pages-actions.git
